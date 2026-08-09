@@ -1,0 +1,4 @@
+__pycache__/
+venv/
+*.log
+slicer_batch_log.txt
