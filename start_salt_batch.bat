@@ -18,7 +18,7 @@ if not exist "%SLICER_EXE%" (
     exit /b 1
 )
 
-:: Using SlicerSALT.exe with --no-main-window (Proven stable for PCA)
+:: Using SlicerSALT.exe with --no-main-window (Proven stable for SPHARM)
 "%SLICER_EXE%" --no-main-window --python-script "%SCRIPT_PATH%"
 
 echo.

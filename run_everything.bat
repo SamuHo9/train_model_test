@@ -118,7 +118,7 @@ REM ============================================================
 
 title Pipeline [1/5]: ICP Alignment (%FOLDER_NAME%)
 echo [1/5] Running Group-wise ICP Alignment (ICP.py)...
-"%SLICER_EXE%" --no-main-window --no-splash --python-script "%PIPELINE_DIR%\ICP.py" --input_dir "%INPUT_DIR%" --output_dir "%OUTPUT_DIR%"
+"%SLICER_EXE%" --no-main-window --no-splash --python-script "%PIPELINE_DIR%\ICP\ICP.py" --input_dir "%INPUT_DIR%" --output_dir "%OUTPUT_DIR%"
 if not exist "%OUTPUT_DIR%\aligned_nifti" (
     echo.
     echo [ERROR] Step 1 failed - 'aligned_nifti' folder not created.
@@ -134,7 +134,7 @@ echo [2/5] Running Batch SPHARM Processing (run_spharm_batch.py)...
 echo        - Subject 0 processed without template (generates reference)
 echo        - Subjects 1..N processed with subject 0's ellalign as template
 echo        - Output: _SPHARM_procalign.vtk for consistent vertex correspondences
-"%SLICER_EXE%" --no-main-window --no-splash --python-script "%PIPELINE_DIR%\run_spharm_batch.py" --input_dir "%OUTPUT_DIR%\aligned_nifti" --output_dir "%OUTPUT_DIR%"
+"%SLICER_EXE%" --no-main-window --no-splash --python-script "%PIPELINE_DIR%\SPHARM\run_spharm_batch.py" --input_dir "%OUTPUT_DIR%\aligned_nifti" --output_dir "%OUTPUT_DIR%"
 if not exist "%OUTPUT_DIR%\spharm_results" (
     echo.
     echo [ERROR] Step 2 failed - 'spharm_results' folder not created.
@@ -172,7 +172,7 @@ REM ทำไม redirect: ถ้า realign crash กลางทาง ข้�
 REM   user เปิดดูได้แม้ window ปิด (เผื่อ Window manager kill cmd ระหว่าง pause)
 REM ใช้ /b 0 reset errorlevel ก่อนรัน + log ทั้ง stdout & stderr
 ver > nul
-"%USER_PYTHON%" "%PIPELINE_DIR%\realign_spharm.py" --spharm_dir "%OUTPUT_DIR%\spharm_results" > "%OUTPUT_DIR%\realign_log.txt" 2>&1
+"%USER_PYTHON%" "%PIPELINE_DIR%\SPHARM\realign_spharm.py" --spharm_dir "%OUTPUT_DIR%\spharm_results" > "%OUTPUT_DIR%\realign_log.txt" 2>&1
 set "REALIGN_EXIT=!errorlevel!"
 type "%OUTPUT_DIR%\realign_log.txt"
 echo.
@@ -189,35 +189,34 @@ if not "!REALIGN_EXIT!"=="0" (
 echo [OK] realign complete.
 echo.
 
-title Pipeline [4/5]: PCA Analysis (%FOLDER_NAME%)
-echo [4/5] Running PCA Analysis (run_pca_batch.py)...
-"%SLICER_EXE%" --no-main-window --no-splash --python-script "%PIPELINE_DIR%\run_pca_batch.py" --output_dir "%OUTPUT_DIR%"
-if not exist "%OUTPUT_DIR%\pca_results\pca_scores.csv" (
+title Pipeline [4/5]: PLS-DA Analysis (%FOLDER_NAME%)
+echo [4/5] Running PLS-DA Analysis (visualize_plsda.py)...
+"%USER_PYTHON%" "%PIPELINE_DIR%\Visualize\Data_Plots\visualize_plsda.py" --output_dir "%OUTPUT_DIR%"
+if not exist "%OUTPUT_DIR%\plsda_results\plsda_scores.csv" (
     echo.
-    echo [ERROR] Step 4 failed - pca_scores.csv not created.
-    echo         Check pca_results\progress.log for details.
+    echo [ERROR] Step 4 failed - plsda_scores.csv not created.
     pause
     exit /b 1
 )
 timeout /t 2 /nobreak >nul
-echo [OK] pca_scores.csv created.
+echo [OK] plsda_scores.csv created.
 echo.
 
-title Pipeline [5/5]: PCA Visualization (%FOLDER_NAME%)
-echo [5/5] Running PCA Visualization (visualize_pca.py)...
-"%USER_PYTHON%" "%PIPELINE_DIR%\visualize_pca.py" --output_dir "%OUTPUT_DIR%"
-if errorlevel 1 (
+title Pipeline [5/5]: PLS-DA Visualization (%FOLDER_NAME%)
+echo [5/5] Generating PLS-DA Visualization Plot...
+if not exist "%OUTPUT_DIR%\plsda_results\plsda_visualization.png" (
     echo.
-    echo [ERROR] Step 5 failed.
+    echo [ERROR] Step 5 failed - plsda_visualization.png not created.
     pause
     exit /b 1
 )
-echo [OK] visualization complete.
+echo [OK] PLS-DA visualization complete.
 echo.
 
-title Pipeline Display: ICP Convergence Plot (%FOLDER_NAME%)
-echo Displaying ICP Convergence Time-Series Plot...
-"%USER_PYTHON%" "%PIPELINE_DIR%\plot_icp_convergence.py" --output_dir "%OUTPUT_DIR%" --show
+title Pipeline Display: Plots (%FOLDER_NAME%)
+echo Displaying ICP Convergence Plot and PLS-DA Scatter Plot...
+start "" "%USER_PYTHON%" "%PIPELINE_DIR%\ICP\plot_icp_convergence.py" --output_dir "%OUTPUT_DIR%" --show
+start "" "%USER_PYTHON%" "%PIPELINE_DIR%\Visualize\Data_Plots\visualize_plsda.py" --output_dir "%OUTPUT_DIR%" --show
 echo.
 
 echo ============================================================

@@ -1,7 +1,6 @@
 import sys
 import subprocess
 import os
-import json
 import tkinter as tk
 from tkinter import filedialog
 
@@ -25,13 +24,13 @@ except ImportError:
     import plotly.io as pio
 
 def select_file():
-    """Opens a file dialog to select a PCA scores CSV file."""
+    """Opens a file dialog to select a 3D scores CSV file."""
     root = tk.Tk()
     root.withdraw() # Hide the main window
     root.attributes('-topmost', True) # Bring to front
     
     file_path = filedialog.askopenfilename(
-        title="Select PCA Scores CSV File",
+        title="Select 3D Scores CSV File",
         filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
         initialdir=os.getcwd()
     )
@@ -39,7 +38,7 @@ def select_file():
     return file_path
 
 def main():
-    print("--- PCA 3D Interactive Visualizer ---")
+    print("--- 3D Interactive Visualizer ---")
     
     # 1. Select File
     csv_path = select_file()
@@ -52,9 +51,7 @@ def main():
     
     # 2. Setup Paths
     output_root = os.path.dirname(csv_path)
-    json_path = os.path.join(output_root, "pca_model.json")
     
-    # 3. Load Data
     # 3. Load Data
     try:
         df = pd.read_csv(csv_path)
@@ -62,18 +59,18 @@ def main():
         # Detect dimensions
         x_col, y_col, z_col = None, None, None
         method_name = ""
-        if 'PC1' in df.columns and 'PC2' in df.columns and 'PC3' in df.columns:
-            x_col, y_col, z_col = 'PC1', 'PC2', 'PC3'
-            method_name = "PCA"
-        elif 't-SNE 1' in df.columns and 't-SNE 2' in df.columns and 't-SNE 3' in df.columns:
-            x_col, y_col, z_col = 't-SNE 1', 't-SNE 2', 't-SNE 3'
-            method_name = "t-SNE"
-        elif 'PLS-DA 1' in df.columns and 'PLS-DA 2' in df.columns and 'PLS-DA 3' in df.columns:
+        if 'PLS-DA 1' in df.columns and 'PLS-DA 2' in df.columns and 'PLS-DA 3' in df.columns:
             x_col, y_col, z_col = 'PLS-DA 1', 'PLS-DA 2', 'PLS-DA 3'
             method_name = "PLS-DA"
+        elif 'Comp 1' in df.columns and 'Comp 2' in df.columns and 'Comp 3' in df.columns:
+            x_col, y_col, z_col = 'Comp 1', 'Comp 2', 'Comp 3'
+            method_name = "Component"
+        elif len(df.columns) >= 4:
+            x_col, y_col, z_col = df.columns[1], df.columns[2], df.columns[3]
+            method_name = "Score"
             
         if not x_col or not y_col or not z_col:
-            print("Error: Selected CSV must contain columns for PCA ('PC1', 'PC2', 'PC3'), t-SNE ('t-SNE 1', 't-SNE 2', 't-SNE 3'), or PLS-DA ('PLS-DA 1', 'PLS-DA 2', 'PLS-DA 3').")
+            print("Error: Selected CSV must contain 3 component columns (e.g. 'PLS-DA 1', 'PLS-DA 2', 'PLS-DA 3').")
             print("Please make sure you have run the analysis script to generate 3 components.")
             return
     except Exception as e:
@@ -82,27 +79,12 @@ def main():
 
     print(f"Loaded {len(df)} subjects.")
 
-    # 4. Load Explained Variance Ratio (EVR) from JSON
-    evr = []
-    if method_name == "PCA":
-        try:
-            if os.path.exists(json_path):
-                with open(json_path, 'r') as f:
-                    data = json.load(f)
-                    # Handle nested structures commonly found in these outputs
-                    if '0' in data: data = data['0']
-                    elif 'All' in data: data = data['All']
-                    evr = data.get('explained_variance_ratio', [])
-        except Exception as e:
-            print(f"Note: Could not load variance ratios from {json_path}: {e}")
+    # Set up labels
+    pc1_label = x_col
+    pc2_label = y_col
+    pc3_label = z_col
 
-    # Set up labels with EVR percentages
-    p_evr = evr if evr and len(evr) >= 3 else [0.0, 0.0, 0.0]
-    pc1_label = f'{x_col} ({p_evr[0]*100:.1f}%)' if (evr and method_name == "PCA") else x_col
-    pc2_label = f'{y_col} ({p_evr[1]*100:.1f}%)' if (evr and method_name == "PCA") else y_col
-    pc3_label = f'{z_col} ({p_evr[2]*100:.1f}%)' if (evr and method_name == "PCA") else z_col
-
-    # Classify subjects into 3 categories
+    # Classify subjects into categories
     def classify_subject(subject_name):
         is_left_side = subject_name.startswith("left_") or subject_name.startswith("lh_") or "_lh" in subject_name.lower()
         name_upper = subject_name.upper()
@@ -128,7 +110,7 @@ def main():
     # Map classifications
     df['Group'] = df['Subject'].apply(classify_subject)
 
-    # 5. Create Plotly 3D Figure
+    # 4. Create Plotly 3D Figure
     fig = px.scatter_3d(
         df, 
         x=x_col, 
@@ -195,3 +177,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

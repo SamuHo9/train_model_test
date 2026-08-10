@@ -134,14 +134,10 @@ class SpharmMeanViewer:
     def __init__(self, spharm_dir):
         self.spharm_dir = spharm_dir.replace("\\", "/")
 
-        # prefer pca_ready, then realigned, fall back to ellalign
+        # prefer realigned, fall back to ellalign
         files = sorted(glob.glob(os.path.join(self.spharm_dir,
-                                              "*_SPHARM_pca_ready.vtk")))
-        source = "pca_ready"
-        if not files:
-            files = sorted(glob.glob(os.path.join(self.spharm_dir,
-                                                  "*_SPHARM_realigned.vtk")))
-            source = "realigned"
+                                              "*_SPHARM_realigned.vtk")))
+        source = "realigned"
         if not files:
             files = sorted(glob.glob(os.path.join(self.spharm_dir,
                                                   "*_SPHARM_ellalign.vtk")))
@@ -152,7 +148,7 @@ class SpharmMeanViewer:
             files = [f for f in files
                      if not any(s in os.path.basename(f)
                                 for s in ("_ellalign", "_grid", "_realigned",
-                                          "_procalign", "_pca_ready"))]
+                                          "_procalign"))]
             source = "SPHARM (non-aligned)"
 
         if not files:
@@ -400,7 +396,7 @@ class SpharmMeanViewer:
         # 2. Color Bar Legend (ขวา)
         self.scalar_bar = vtk.vtkScalarBarActor()
         self.scalar_bar.SetLookupTable(self.lut)
-        self.scalar_bar.SetTitle("Deformation (mm)" if "realigned" in self.source or "pca_ready" in self.source else "Deformation (units)")
+        self.scalar_bar.SetTitle("Deformation (mm)" if "realigned" in self.source else "Deformation (units)")
         self.scalar_bar.SetNumberOfLabels(5)
         self.scalar_bar.GetTitleTextProperty().SetColor(1, 1, 1)
         self.scalar_bar.GetTitleTextProperty().BoldOn()

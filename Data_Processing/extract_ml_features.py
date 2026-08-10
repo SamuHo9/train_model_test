@@ -74,11 +74,8 @@ def main():
     print(f"Target folder: {spharm_dir}")
 
     # 1. ค้นหาไฟล์ aligned vtk
-    vtk_files = sorted(glob.glob(os.path.join(spharm_dir, "*_SPHARM_pca_ready.vtk")))
-    source = "pca_ready"
-    if not vtk_files:
-        vtk_files = sorted(glob.glob(os.path.join(spharm_dir, "*_SPHARM_realigned.vtk")))
-        source = "realigned"
+    vtk_files = sorted(glob.glob(os.path.join(spharm_dir, "*_SPHARM_realigned.vtk")))
+    source = "realigned"
     if not vtk_files:
         vtk_files = sorted(glob.glob(os.path.join(spharm_dir, "*_SPHARM_procalign.vtk")))
         source = "procalign"
@@ -152,7 +149,7 @@ def main():
             filename = os.path.basename(filepath)
             # ลบส่วนขยายออกเพื่อใช้เป็นชื่อ Subject
             subject_name = filename
-            for suffix in ("_SPHARM_pca_ready.vtk", "_SPHARM_realigned.vtk", "_SPHARM_procalign.vtk", "_SPHARM_ellalign.vtk"):
+            for suffix in ("_SPHARM_realigned.vtk", "_SPHARM_procalign.vtk", "_SPHARM_ellalign.vtk"):
                 subject_name = subject_name.replace(suffix, "")
 
             # จัดกลุ่ม

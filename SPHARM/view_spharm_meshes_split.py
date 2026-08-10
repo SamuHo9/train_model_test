@@ -121,14 +121,10 @@ class SpharmMeshViewer:
     def __init__(self, spharm_dir):
         self.spharm_dir = spharm_dir.replace("\\", "/")
 
-        # prefer pca_ready, then realigned, fall back to ellalign
+        # prefer realigned, fall back to ellalign
         files = sorted(glob.glob(os.path.join(self.spharm_dir,
-                                              "*_SPHARM_pca_ready.vtk")))
-        source = "pca_ready"
-        if not files:
-            files = sorted(glob.glob(os.path.join(self.spharm_dir,
-                                                  "*_SPHARM_realigned.vtk")))
-            source = "realigned"
+                                              "*_SPHARM_realigned.vtk")))
+        source = "realigned"
         if not files:
             files = sorted(glob.glob(os.path.join(self.spharm_dir,
                                                   "*_SPHARM_ellalign.vtk")))
@@ -140,7 +136,7 @@ class SpharmMeshViewer:
             files = [f for f in files
                      if not any(s in os.path.basename(f)
                                 for s in ("_ellalign", "_grid", "_realigned",
-                                          "_procalign", "_pca_ready"))]
+                                          "_procalign"))]
             source = "SPHARM (non-aligned)"
 
         if not files:
@@ -189,23 +185,7 @@ class SpharmMeshViewer:
         avg_x_width = np.mean(x_maxs) - np.mean(x_mins) if self.meshes else 2.0
         self.shift_amount = 1.1 * avg_x_width
 
-        # mean shape candidates (จาก PCA output ถ้ามี)
         self.mean_poly = None
-        candidates = [
-            os.path.join(os.path.dirname(self.spharm_dir), "pca_results",
-                         "pca_model_0_mean.vtk"),
-            os.path.join(os.path.dirname(self.spharm_dir), "pca_results",
-                         "pca_model_All_mean.vtk"),
-        ]
-        for c in candidates:
-            if os.path.exists(c):
-                print(f"Loading mean shape: {c}")
-                self.mean_poly = load_polydata_smoothed(c)
-                if self.mean_poly is not None:
-                    break
-
-        if self.mean_poly is None:
-            print("(no pca_model mean shape found - reference overlay disabled)")
 
         self.setup_vtk()
         self.build_actors()

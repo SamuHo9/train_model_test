@@ -271,11 +271,10 @@ def main():
         print(f"[ERROR] Not a folder: {folder}")
         sys.exit(1)
 
-    # Clean up old realigned/pca_ready files to prevent mixing stale results from previous runs
-    old_aligned_files = (glob.glob(os.path.join(folder, "*_SPHARM_realigned.vtk")) +
-                         glob.glob(os.path.join(folder, "*_SPHARM_pca_ready.vtk")))
+    # Clean up old realigned files to prevent mixing stale results from previous runs
+    old_aligned_files = glob.glob(os.path.join(folder, "*_SPHARM_realigned.vtk"))
     if old_aligned_files:
-        print(f"Cleaning up {len(old_aligned_files)} old realigned/pca_ready files...")
+        print(f"Cleaning up {len(old_aligned_files)} old realigned files...")
         for f in old_aligned_files:
             try:
                 os.remove(f)
@@ -285,7 +284,7 @@ def main():
     all_spharm = sorted(glob.glob(os.path.join(folder, "*_SPHARM.vtk")))
     candidate_files = [f for f in all_spharm
                        if not any(s in os.path.basename(f)
-                                  for s in ("_ellalign", "_grid", "_realigned", "_procalign", "_pca_ready"))]
+                                  for s in ("_ellalign", "_grid", "_realigned", "_procalign"))]
     source = "_SPHARM.vtk"
 
     if not candidate_files:
@@ -296,7 +295,7 @@ def main():
         all_vtk = sorted(glob.glob(os.path.join(folder, "*.vtk")))
         candidate_files = [f for f in all_vtk
                            if not any(s in os.path.basename(f)
-                                      for s in ("_realigned.vtk", "_pca_ready.vtk"))]
+                                      for s in ("_realigned.vtk",))]
         source = ".vtk"
 
     if not candidate_files:
@@ -384,9 +383,7 @@ def main():
                 break
         
         out_path_realigned = base + "_SPHARM_realigned.vtk"
-        out_path_pca_ready = base + "_SPHARM_pca_ready.vtk"
         write_polydata(out_poly, out_path_realigned)
-        write_polydata(out_poly, out_path_pca_ready)
 
         name = os.path.basename(s["file"])
         for suf in ("_SPHARM_procalign.vtk", "_SPHARM_ellalign.vtk", "_SPHARM.vtk"):

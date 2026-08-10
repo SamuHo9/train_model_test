@@ -128,7 +128,7 @@ def main():
     all_coef_files = sorted(glob.glob(os.path.join(spharm_results_dir, "*_SPHARM.coef")))
     coef_files = [f for f in all_coef_files
                   if not any(s in os.path.basename(f)
-                             for s in ("_ellalign", "_grid", "_realigned", "_procalign", "_pca_ready"))]
+                             for s in ("_ellalign", "_grid", "_realigned", "_procalign"))]
 
     if not coef_files:
         print("ERROR: No *_SPHARM.coef files found in spharm_results/")

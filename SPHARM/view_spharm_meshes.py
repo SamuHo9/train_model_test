@@ -138,7 +138,7 @@ class SpharmMeshViewer:
             files = [f for f in files
                      if not any(s in os.path.basename(f)
                                 for s in ("_ellalign", "_grid", "_realigned",
-                                          "_procalign", "_pca_ready"))]
+                                          "_procalign"))]
             source = "SPHARM (non-aligned)"
 
         if not files:
@@ -177,23 +177,7 @@ class SpharmMeshViewer:
             print("[ERROR] No valid meshes loaded.")
             return
 
-        # mean shape candidates (จาก PCA output ถ้ามี)
         self.mean_poly = None
-        candidates = [
-            os.path.join(os.path.dirname(self.spharm_dir), "pca_results",
-                         "pca_model_0_mean.vtk"),
-            os.path.join(os.path.dirname(self.spharm_dir), "pca_results",
-                         "pca_model_All_mean.vtk"),
-        ]
-        for c in candidates:
-            if os.path.exists(c):
-                print(f"Loading mean shape: {c}")
-                self.mean_poly = load_polydata_smoothed(c)
-                if self.mean_poly is not None:
-                    break
-
-        if self.mean_poly is None:
-            print("(no pca_model mean shape found - reference overlay disabled)")
 
         self.setup_vtk()
         self.build_actors()
