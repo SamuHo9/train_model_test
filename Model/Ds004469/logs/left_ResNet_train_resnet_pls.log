@@ -1,0 +1,32 @@
+﻿Loading data...
+Using device: cuda
+Evaluating PLS-DA components...
+PLS components: 2, CV Accuracy (PLS only): 1.0000
+PLS components: 5, CV Accuracy (PLS only): 1.0000
+PLS components: 10, CV Accuracy (PLS only): 1.0000
+PLS components: 15, CV Accuracy (PLS only): 1.0000
+PLS components: 20, CV Accuracy (PLS only): 1.0000
+PLS components: 30, CV Accuracy (PLS only): 1.0000
+PLS components: 40, CV Accuracy (PLS only): 1.0000
+PLS components: 50, CV Accuracy (PLS only): 1.0000
+PLS components: 100, CV Accuracy (PLS only): 1.0000
+-> Selected Best number of PLS components: 2
+Running ResNet CV with 2 PLS components...
+ResNet 5-Fold CV Accuracy: 0.6115 (+/- 0.2660)
+Training Final ResNet Model...
+
+Evaluating on Test Set...
+*** Final Test Accuracy: 0.5000 ***
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.62      0.73      0.67        11
+           1       0.00      0.00      0.00         5
+
+    accuracy                           0.50        16
+   macro avg       0.31      0.36      0.33        16
+weighted avg       0.42      0.50      0.46        16
+
+
+Pipeline finished successfully! All files are in the 'plots' directory.

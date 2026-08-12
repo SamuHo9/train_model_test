@@ -1,0 +1,55 @@
+﻿python : 
+C:\Users\IHCK\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1833: 
+UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use 
+`zero_division` parameter to control this behavior.
+At line:1 char:1
++ python train_svm_pls.py *>&1 | Out-File -FilePath 'C:\Users\IHCK\Desk ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\IHCK\A... this behavior.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", result.shape[0])
+C:\Users\IHCK\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1833: 
+UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use 
+`zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", result.shape[0])
+C:\Users\IHCK\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\metrics\_classification.py:1833: 
+UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use 
+`zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", result.shape[0])
+Loading data...
+Training set shape: (320, 507)
+Test set shape: (17, 507)
+Evaluating PLS-DA components...
+PLS components: 2, CV Accuracy: 0.9969
+PLS components: 5, CV Accuracy: 1.0000
+PLS components: 10, CV Accuracy: 1.0000
+PLS components: 15, CV Accuracy: 1.0000
+PLS components: 20, CV Accuracy: 1.0000
+PLS components: 30, CV Accuracy: 1.0000
+PLS components: 40, CV Accuracy: 1.0000
+PLS components: 50, CV Accuracy: 1.0000
+PLS components: 100, CV Accuracy: 1.0000
+Saved PLS components comparison graph to 'plots/pls_components_comparison.png'
+-> Selected Best number of PLS components: 5 with CV accuracy: 1.0000
+Fitting final PLS model with 5 components...
+Training SVM Model...
+SVM 5-Fold CV Accuracy (Strict without leakage): 0.9969 (+/- 0.0063)
+
+Evaluating on Test Set...
+*** Final Test Accuracy: 0.8235 ***
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.82      1.00      0.90        14
+           1       0.00      0.00      0.00         3
+
+    accuracy                           0.82        17
+   macro avg       0.41      0.50      0.45        17
+weighted avg       0.68      0.82      0.74        17
+
+Saved Confusion Matrix to 'plots/confusion_matrix.png'
+Saved ROC curve to 'plots/roc_curve.png'
+
+Pipeline finished successfully! All files are in the 'plots' directory.

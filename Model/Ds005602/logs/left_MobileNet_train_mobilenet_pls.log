@@ -1,0 +1,32 @@
+﻿Loading data...
+Using device: cuda
+Evaluating PLS-DA components...
+PLS components: 2, CV Accuracy (PLS only): 0.9738
+PLS components: 5, CV Accuracy (PLS only): 0.9992
+PLS components: 10, CV Accuracy (PLS only): 0.9967
+PLS components: 15, CV Accuracy (PLS only): 0.9959
+PLS components: 20, CV Accuracy (PLS only): 0.9959
+PLS components: 30, CV Accuracy (PLS only): 0.9975
+PLS components: 40, CV Accuracy (PLS only): 0.9984
+PLS components: 50, CV Accuracy (PLS only): 0.9984
+PLS components: 100, CV Accuracy (PLS only): 0.9262
+-> Selected Best number of PLS components: 5
+Running MobileNetV2 CV with 5 PLS components...
+MobileNetV2 5-Fold CV Accuracy: 1.0000 (+/- 0.0000)
+Training Final MobileNetV2 Model...
+
+Evaluating on Test Set...
+*** Final Test Accuracy: 0.7619 ***
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.80      0.83      0.81        53
+           1       0.69      0.65      0.67        31
+
+    accuracy                           0.76        84
+   macro avg       0.74      0.74      0.74        84
+weighted avg       0.76      0.76      0.76        84
+
+
+Pipeline finished successfully! All files are in the 'plots' directory.
