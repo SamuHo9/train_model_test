@@ -1,0 +1,36 @@
+﻿Loading data...
+Training set shape: (362, 507)
+Test set shape: (277, 507)
+Evaluating PLS-DA components...
+PLS components: 2, CV Accuracy: 0.9972
+PLS components: 5, CV Accuracy: 1.0000
+PLS components: 10, CV Accuracy: 1.0000
+PLS components: 15, CV Accuracy: 1.0000
+PLS components: 20, CV Accuracy: 1.0000
+PLS components: 30, CV Accuracy: 1.0000
+PLS components: 40, CV Accuracy: 1.0000
+PLS components: 50, CV Accuracy: 0.9694
+PLS components: 100, CV Accuracy: 0.9639
+Saved PLS components comparison graph to 'plots/pls_components_comparison.png'
+-> Selected Best number of PLS components: 5 with CV accuracy: 1.0000
+Fitting final PLS model with 5 components...
+Training SVM Model...
+SVM 5-Fold CV Accuracy (Strict without leakage): 1.0000 (+/- 0.0000)
+
+Evaluating on Test Set...
+*** Final Test Accuracy: 0.6029 ***
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.64      0.83      0.73       175
+           1       0.42      0.21      0.28       102
+
+    accuracy                           0.60       277
+   macro avg       0.53      0.52      0.50       277
+weighted avg       0.56      0.60      0.56       277
+
+Saved Confusion Matrix to 'plots/confusion_matrix.png'
+Saved ROC curve to 'plots/roc_curve.png'
+
+Pipeline finished successfully! All files are in the 'plots' directory.
